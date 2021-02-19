@@ -1,14 +1,39 @@
-var map = L.map('mapid').setView([51.505, -0.09], 3);
+var baseLayer = L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+  attribution: "© <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+});
 
-// тайловый слой карты
-L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-    attribution: "© <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
-}).addTo(map);
+var esriWorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
+var stadiaAlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+});
+
+var map = L.map('mapid', {
+  center: [51.505, -0.09],
+  zoom: 3,
+  layers: [baseLayer, esriWorldImagery, stadiaAlidadeSmoothDark]
+});
+
+var baseMaps = {
+  "Base OSM": baseLayer,
+  "Esri World": esriWorldImagery,
+  "Dark map": stadiaAlidadeSmoothDark
+};
 
 //url usgs
 var earthUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02";
 
 var markers = L.markerClusterGroup();
+
+var overlayMaps = {
+  "Earthquake`s markers": markers
+};
+
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+
 var markerRed = L.icon({
   iconUrl: "images/marker-red.png",
   iconSize:[45, 45]
@@ -100,7 +125,7 @@ var earthquakeInfo = $.ajax({
         pointToLayer: filterIcons
     });
 
-    markers.addLayer(jsonLayer );
+    markers.addLayer(jsonLayer);
     markers.addTo(map);
 
     //функция создающая слайдер
@@ -169,7 +194,7 @@ var earthquakeInfo = $.ajax({
               onEachFeature: createPopup,
               pointToLayer: filterIcons
             });
-            markers.addLayer(jsonLayer );
+            markers.addLayer(jsonLayer);
             markers.addTo(map);
 
             $( "#slider-vertical" ).slider({
