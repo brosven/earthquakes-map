@@ -1,0 +1,258 @@
+@font-face {
+  font-family: "Quicksand-Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Quicksand-Regular"),
+    url("../fonts/Quicksand-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Quicksand-Medium";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Quicksand-Medium"),
+    url("../fonts/Quicksand-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Quicksand-Light";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Quicksand-Light"),
+    url("../fonts/Quicksand-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Quicksand-Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("uicksand-Bold"),
+    url("../fonts/Quicksand-Bold.ttf") format("truetype");
+}
+html {
+  height: 100%;
+}
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+
+  font-family: "Quicksand-Regular", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 14px;
+  color: #283645;
+
+  background-color: #fff;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.hidden:not(:focus):not(:active),
+input[type="checkbox"].visually-hidden,
+input[type="radio"].visually-hidden {
+  position: absolute;
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.filter-button {
+  position: absolute;
+
+  width: 40px;
+  height: 45px;
+
+  background-image: url(../images/customization-dark.svg);
+  background-size: 100% auto;
+
+  left: 8px;
+  top: 76px;
+  z-index: 2;
+}
+
+.filter-button:hover {
+  background-image: url(../images/customization.svg);
+}
+
+.filter-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 119px;
+  left: 25px;
+
+  width: 295px;
+  min-height: 325px;
+
+  background-color: #fff;
+
+  border-radius: 10px 10px 10px 10px;
+  -webkit-box-shadow: 0px 6px 7px 2px rgba(34, 60, 80, 0.3);
+  -moz-box-shadow: 0px 6px 7px 2px rgba(34, 60, 80, 0.3);
+  box-shadow: 0px 6px 7px 2px rgba(34, 60, 80, 0.3);
+
+  z-index: 2;
+  text-align: center;
+}
+
+.filter-container {
+  width: 235px;
+  min-height: 270px;
+
+  background-color: #fff;
+
+  text-align: center;
+}
+
+.filter-header {
+  text-align: center;
+
+  width: 100%;
+  min-height: 10px;
+
+  margin: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px 10px 0px 0px;
+
+  background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+  color: #fff;
+  font-family: "Quicksand-Bold";
+}
+
+.filter-text {
+  font-family: "Quicksand-Medium";
+}
+
+.filter-warning {
+  text-align: center;
+
+  margin: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  border-radius: 0px 0px 10px 10px;
+  background-image: radial-gradient(
+    circle farthest-corner at 47.4% 55%,
+    rgba(218, 61, 61, 1) 0%,
+    rgba(170, 13, 71, 0.81) 90%
+  );
+  color: #fff;
+  font-family: "Quicksand-Bold";
+}
+
+.filter-input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1.5px solid #d3d3d3;
+
+  text-align: left;
+  color: #000;
+  font-family: "Quicksand-Light";
+}
+
+.filter-input:hover {
+  outline: none;
+  border-color: #a1c4fd;
+  color: #d3d3d3;
+}
+
+.filter-input:active {
+  outline: none;
+}
+
+.filter-input:focus {
+  outline: none;
+}
+
+.slider-container {
+  position: relative;
+}
+
+.slider-mag {
+  text-align: center;
+}
+
+.datepicker-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 190px;
+
+  position: absolute;
+  top: 111px;
+  left: 53px;
+}
+
+.ui-widget {
+  font-family: "Quicksand-Light";
+  font-size: 1.1em;
+}
+
+.ui-widget-header {
+  border: 0;
+  background: 0;
+  background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+  color: #fff;
+}
+
+.ui-state-default {
+  border: 0;
+  background: 0;
+}
+
+.ui-widget-content {
+  border-color: #e2e2e2;
+}
+
+.ui-slider {
+  height: 200px;
+  width: 7px;
+}
+
+.ui-slider .ui-slider-handle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.ui-slider .ui-slider-handle:active {
+  border-radius: 50%;
+  outline: none;
+}
+
+.ui-slider .ui-slider-handle:focus {
+  border-radius: 50%;
+  outline: none;
+}
+
+.ui-state-active {
+  border-color: #a1c4fd;
+}

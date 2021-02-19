@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+
+    <link rel="stylesheet" href="css/jquery-ui.min.css" />
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="css/main.css" />
+
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+
+    <script src="js/leaflet.markercluster.js"></script>
+    <script src="js/tectonic-plates.json"></script>
+    <title>Earthquake map</title>
+  </head>
+  <body>
+    <div id="mapid" class="map"></div>
+    <a href="#" class="filter-button"
+      ><span class="hidden">кнопка фильтрации</span></a
+    >
+    <div class="filter-wrapper">
+      <h2 class="filter-header">Marker's filter</h2>
+      <div class="filter-container">
+        <div class="slider-container">
+          <p>
+            <label class="filter-text" for="amount">Magnitude:</label>
+            <input
+              type="text"
+              id="amount"
+              class="filter-input slider-mag"
+              readonly
+            />
+          </p>
+
+          <div id="slider-vertical"></div>
+        </div>
+
+        <div class="datepicker-container">
+          <p class="filter-text">Select period of earthquakes</p>
+          <p class="period-picker-container">
+            <span class="hidden">From:</span>
+            <input
+              type="text"
+              id="datepickerFirst"
+              class="filter-input"
+              placeholder="From"
+            />
+          </p>
+          <p class="period-picker-container">
+            <span class="hidden">To:</span>
+            <input
+              type="text"
+              id="datepickerSecond"
+              class="filter-input"
+              placeholder="To"
+            />
+          </p>
+        </div>
+      </div>
+
+      <p class="filter-warning">
+        Don't pick long periods, there can be problems with loading
+      </p>
+    </div>
+    <script src="js/map.js"></script>
+  </body>
+</html>
