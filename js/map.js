@@ -13,9 +13,13 @@ var stadiaAlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/al
 
 var map = L.map('mapid', {
   center: [51.505, -0.09],
-  zoom: 3,
+  zoom: 2,
+  minZoom: 2,
   layers: [baseLayer, esriWorldImagery, stadiaAlidadeSmoothDark]
 });
+
+map.setMaxBounds(map.getBounds());
+
 
 var baseMaps = {
   "Base OSM": baseLayer,
@@ -23,13 +27,45 @@ var baseMaps = {
   "Dark map": stadiaAlidadeSmoothDark
 };
 
+
+var tUrl = "tectonic.json";
+var countriesJson = L.geoJson();
+
+var myStyle = {
+  "fillcolor": 'red',
+  "color": "#ff7800",
+  "weight": 5,
+  "opacity": 0.65
+};
+
+
+// Настройка json со странами
+$.getJSON(tUrl, function(data) {
+  countriesJson.addData(data);
+  countriesJson.eachLayer(function (layer) {  
+    if(layer.feature.properties.NAME) {    
+      layer.bindPopup(layer.feature.properties.NAME);
+      layer.setStyle({
+        weight: 1,
+        color: 'red',
+        opacity: 0.6,
+        fillOpacity: 0.3,
+        fillColor: 'blue'
+    });
+    }
+  });
+});
+
+countriesJson.addTo(map);
+
 //url usgs
 var earthUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02";
 
 var markers = L.markerClusterGroup();
 
 var overlayMaps = {
-  "Earthquake`s markers": markers
+  "Earthquake`s markers": markers,
+  "Countries": countriesJson
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -118,6 +154,7 @@ var earthquakeInfo = $.ajax({
   
   // код работает только после полного получения данных от запроса earthquakeInfo
   $.when(earthquakeInfo).done(function(earthquakeInfo){
+    console.log(earthquakeInfo);
       var myJson = earthquakeInfo;
       jsonLayer  = L.geoJson(myJson, {
         filter: filterMagnitude,
