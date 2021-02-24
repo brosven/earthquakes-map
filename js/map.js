@@ -20,24 +20,14 @@ var map = L.map('mapid', {
 
 map.setMaxBounds(map.getBounds());
 
-
 var baseMaps = {
   "Base OSM": baseLayer,
   "Esri World": esriWorldImagery,
   "Dark map": stadiaAlidadeSmoothDark
 };
 
-
-var tUrl = "tectonic.json";
+var tUrl = "countries.json";
 var countriesJson = L.geoJson();
-
-var myStyle = {
-  "fillcolor": 'red',
-  "color": "#ff7800",
-  "weight": 5,
-  "opacity": 0.65
-};
-
 
 // Настройка json со странами
 $.getJSON(tUrl, function(data) {
@@ -128,7 +118,6 @@ filterPopup.addEventListener('click', function (evt){
   filterToggle();
 });
 
-
 //функция фильтрации магнитуды
 var filterMagnitude = function (feature) {
   if(feature.properties.mag>=magnitudeValue){
@@ -151,7 +140,6 @@ var earthquakeInfo = $.ajax({
     }
   });
 
-  
   // код работает только после полного получения данных от запроса earthquakeInfo
   $.when(earthquakeInfo).done(function(earthquakeInfo){
     console.log(earthquakeInfo);
