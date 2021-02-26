@@ -13,17 +13,50 @@ var stadiaAlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/al
 
 var map = L.map('mapid', {
   center: [51.505, -0.09],
-  zoom: 2,
+  zoom: 3,
   minZoom: 2,
   layers: [baseLayer, esriWorldImagery, stadiaAlidadeSmoothDark]
 });
 
 map.setMaxBounds(map.getBounds());
 
-var baseMaps = {
-  "Base OSM": baseLayer,
-  "Esri World": esriWorldImagery,
-  "Dark map": stadiaAlidadeSmoothDark
+var info = L.control();
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); 
+    this.update();
+    return this._div;
+};
+
+info.update = function (props) {
+  this._div.innerHTML = '<h4>Country information</h4>' +  (props ?
+      '<b>' + props.NAME + '</b><br />'
+      : 'Hover over a country');
+};
+
+var highlightFeature = function (e) {
+  var layer = e.target;
+  info.update(layer.feature.properties);
+
+  layer.setStyle({
+      weight: 3,
+      color: 'white',
+      fillColor: 'red',
+      dashArray: ''
+  });
+
+  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+      layer.bringToFront();
+  }
+};
+
+var resetHighlight = function (e) {
+  countriesJson.resetStyle(e.target);
+  info.update();
+};
+
+var zoomToFeature = function (e) {
+  map.fitBounds(e.target.getBounds());
 };
 
 var tUrl = "countries.json";
@@ -32,26 +65,28 @@ var countriesJson = L.geoJson();
 // Настройка json со странами
 $.getJSON(tUrl, function(data) {
   countriesJson.addData(data);
-  countriesJson.eachLayer(function (layer) {  
-    if(layer.feature.properties.NAME) {    
-      layer.bindPopup(layer.feature.properties.NAME);
-      layer.setStyle({
-        weight: 1,
-        color: 'red',
-        opacity: 0.6,
-        fillOpacity: 0.3,
-        fillColor: 'blue'
-    });
-    }
+  countriesJson.eachLayer(function (layer) {    
+      layer.on({
+         mouseover: highlightFeature,
+         mouseout: resetHighlight,
+         click: zoomToFeature
+     });
   });
 });
 
 countriesJson.addTo(map);
+info.addTo(map);
 
 //url usgs
 var earthUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02";
 
 var markers = L.markerClusterGroup();
+
+var baseMaps = {
+  "Base OSM": baseLayer,
+  "Esri World": esriWorldImagery,
+  "Dark map": stadiaAlidadeSmoothDark
+};
 
 var overlayMaps = {
   "Earthquake`s markers": markers,
