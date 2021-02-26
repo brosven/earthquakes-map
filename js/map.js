@@ -1,14 +1,100 @@
-var map = L.map('mapid').setView([51.505, -0.09], 3);
+var baseLayer = L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+  attribution: "© <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+});
 
-// тайловый слой карты
-L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-    attribution: "© <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
-}).addTo(map);
+var esriWorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
+var stadiaAlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+});
+
+var map = L.map('mapid', {
+  center: [51.505, -0.09],
+  zoom: 3,
+  minZoom: 2,
+  layers: [baseLayer, esriWorldImagery, stadiaAlidadeSmoothDark]
+});
+
+map.setMaxBounds(map.getBounds());
+
+var info = L.control();
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); 
+    this.update();
+    return this._div;
+};
+
+info.update = function (props) {
+  this._div.innerHTML = '<h4>Country information</h4>' +  (props ?
+      '<b>' + props.NAME + '</b><br />'
+      : 'Hover over a country');
+};
+
+var highlightFeature = function (e) {
+  var layer = e.target;
+  info.update(layer.feature.properties);
+
+  layer.setStyle({
+      weight: 3,
+      color: 'white',
+      fillColor: 'red',
+      dashArray: ''
+  });
+
+  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+      layer.bringToFront();
+  }
+};
+
+var resetHighlight = function (e) {
+  countriesJson.resetStyle(e.target);
+  info.update();
+};
+
+var zoomToFeature = function (e) {
+  map.fitBounds(e.target.getBounds());
+};
+
+var tUrl = "countries.json";
+var countriesJson = L.geoJson();
+
+// Настройка json со странами
+$.getJSON(tUrl, function(data) {
+  countriesJson.addData(data);
+  countriesJson.eachLayer(function (layer) {    
+      layer.on({
+         mouseover: highlightFeature,
+         mouseout: resetHighlight,
+         click: zoomToFeature
+     });
+  });
+});
+
+countriesJson.addTo(map);
+info.addTo(map);
 
 //url usgs
 var earthUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02";
 
 var markers = L.markerClusterGroup();
+
+var baseMaps = {
+  "Base OSM": baseLayer,
+  "Esri World": esriWorldImagery,
+  "Dark map": stadiaAlidadeSmoothDark
+};
+
+var overlayMaps = {
+  "Earthquake`s markers": markers,
+  "Countries": countriesJson
+};
+
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+
 var markerRed = L.icon({
   iconUrl: "images/marker-red.png",
   iconSize:[45, 45]
@@ -67,7 +153,6 @@ filterPopup.addEventListener('click', function (evt){
   filterToggle();
 });
 
-
 //функция фильтрации магнитуды
 var filterMagnitude = function (feature) {
   if(feature.properties.mag>=magnitudeValue){
@@ -90,9 +175,9 @@ var earthquakeInfo = $.ajax({
     }
   });
 
-  
   // код работает только после полного получения данных от запроса earthquakeInfo
   $.when(earthquakeInfo).done(function(earthquakeInfo){
+    console.log(earthquakeInfo);
       var myJson = earthquakeInfo;
       jsonLayer  = L.geoJson(myJson, {
         filter: filterMagnitude,
@@ -100,7 +185,7 @@ var earthquakeInfo = $.ajax({
         pointToLayer: filterIcons
     });
 
-    markers.addLayer(jsonLayer );
+    markers.addLayer(jsonLayer);
     markers.addTo(map);
 
     //функция создающая слайдер
@@ -169,7 +254,7 @@ var earthquakeInfo = $.ajax({
               onEachFeature: createPopup,
               pointToLayer: filterIcons
             });
-            markers.addLayer(jsonLayer );
+            markers.addLayer(jsonLayer);
             markers.addTo(map);
 
             $( "#slider-vertical" ).slider({
